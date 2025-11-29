@@ -1,6 +1,8 @@
 const express = require('express')
 const app = express()
 
+app.set('view engine', 'ejs');
+
 app.get('/', (req, res) => {
     res.send(`<h1>Hello World!</h1>`);
 })
@@ -20,7 +22,7 @@ app.get('/search', (req, res) => {
     res.send(`<h1>Search Page name: ${name}, age: ${age}</h1>`);
 })
 
-// Express js Response 
+// ################################################# Express js Response #######################################
 app.get('/response', (req, res) => {
     res.send({
         name: 'John',
@@ -43,10 +45,25 @@ app.get('about1', (req, res) => {
     res.redirect('/about');
 })
 
+//render the ejs file 
+app.get('/user1', (req, res) => {
+    res.render('user.ejs');
+})
 
+// download the ejs file
+app.get('/user1/download', (req, res) => {
+    res.download('./files/shortcuts.pdf', 'Document.pdf');
+})
 
+// send the ejs file it's open in browser
+app.get('/user1/send', (req, res) => {
+    res.sendFile(__dirname + '/files/shortcuts.pdf');
+})
+app.get('/error', (req, res) => {
+    res.sendStatus(404);
+})
 
-
+// ################################################### end of Express Js Response ######################################
 
 app.listen(3000, () => {
     console.log('Server is running on port 3000')
