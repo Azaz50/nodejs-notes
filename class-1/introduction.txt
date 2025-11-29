@@ -1,0 +1,107 @@
+NodeJS Introduction
+Node.js is an open-source, cross-platform JavaScript runtime environment that allows you to run JavaScript code outside a web browser.
+Server Side Script
+• PHP
+• ASP.net
+• Python
+• GO
+• NodeJS
+Client Side Script
+• HTML
+• css
+• JavaScript
+
+----------------------------------------------------------------
+Use of NodeJS: 
+• CMS (Content Management System)
+• ERP(Enterprise Resource Planning)
+• CRM(Customer Relationship Management)
+• Mail server
+• Real-time Applications : Chatting System, online games
+• File Storage System
+• Command-Line Tools
+• Backend for Mobile Apps
+• Streaming Data : Video streaming, Audio streaming, and processing sensor data from IoT devices.
+---------------------------------------------------------------------------
+@ Benefits of NodeJS: 
+• Performance: V8 engine and non-blocking 1/0 make it very fast and efficient.
+• Scalability: Easily handles a large number of concurrent connections.
+• Full-Stack JavaScript: Developers can use JavaScript for both the front-end and back-end, which reduces
+switching and improves development speed.
+Large Ecosystem: NPM provides a vast collection of libraries and tools.
+• Community: A large and active community provides support, resources, and open-source contributions.
+• Real-time Capabilities: Excellent for building real-time applications.
+Easy to Learn: If you already know JavaScript, the learning curve for Node.js is relatively gentle.
+• Cost-Effective•. Can often reduce infrastructure costs due to its efficient resource utilization.
+--------------------------------------------------------------------------
+Popular Companies using NodeJS:
+• Netflix
+• LinkedIn
+• Uber
+• PayPal
+• NASA
+• Walmart
+• Medium
+• Trello
+• eBay
+--------------------------------------------------------------------------
+What is web framework ?
+Web frameworks are sets of
+pre-written code and libraries that provide a
+foundation for developing software applications.
+Pre-written Code & Library
+. Tools
+• Components
+• Modules
+Examples: 
+• Database Component
+• Caching
+• Pagination
+• Session management
+• Form Handling
+• Security mechanisms
+• User authentication
+• APIs
+• Payment Gateways
+Benefits:
+• Code organization
+• Reusability
+• Standardiza
+• Testing & debugging support
+• Community and support
+---------------------------------------------------------------------------
+Type of Frameworks
+->Opinionated Framework
+Has a defined architecture
+(MVC, MVVM, etc.).
+• Ruby on Rails (Ruby)
+• Django (Python)
+• Spring Boot (Java)
+• Laravel (PHP)
+Unopinionated Framework
+No strict rules or
+predefined workflow.
+• Express.js (Node.js)
+• Flask (Python)
+• FastAPl (Python)
+• Koa.js (Node.js)
+• React.js  
+---------------------------------------------------------------------------
+What we will learn in this series
+• Parameters
+• Requests
+• APIs
+• Template Engine
+• Middleware
+• Validation
+• File Upload
+• Routers
+• Cookies
+• Sessions
+• Authentication
+• Error Handling
+• Testing
+• Events
+• Streams
+• Sockets
+---------------------------------------------------------

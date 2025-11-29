@@ -1,0 +1,134 @@
+setup project new:
+$npm init -y
+$npm install express
+-----------------------------------------------------------------------------------
+How Express.js Works (Very Short & Simple)
+
+Express.js is a lightweight web framework for Node.js.
+
+A client sends a request to the server.
+
+Express processes the request through middleware (logging, auth, parsing).
+
+It then matches the request to a route (like GET /users).
+
+The route handler runs and sends a response back to the client.
+
+Simple flow:
+Request → Middleware → Route → Response
+-----------------------------------------------------------------------------------
+✅ How to Use Express.js (Step-by-Step, Very Simple)
+1. Install Express
+First, create a project and install Express:
+
+npm init -y
+npm install express
+
+2. Create a Server File
+
+Make a file named server.js (or app.js):
+
+const express = require('express');
+const app = express();
+
+3. Create a Simple Route
+
+This tells Express what to do when someone visits a URL:
+
+app.get('/', (req, res) => {
+  res.send('Hello Express!');
+});
+
+4. Start the Server
+
+app.listen(3000, () => {
+  console.log('Server running on port 3000');
+});
+
+
+Run it:
+
+node server.js
+
+
+Now visit:
+👉 http://localhost:3000
+
+📌 What You Can Do With Express
+
+Create APIs (GET, POST, PUT, DELETE)
+Use middleware (auth, logs, body-parser)
+Connect with databases (MySQL, MongoDB, etc.)
+Build backend for web & mobile apps
+--------------------------------------------------
+To start auto server is nodemon. go to npm website.
+$npm install nodemon
+
+package.json: 
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon index.js"
+  },
+--------------------------------------------------
+********************ExpressJS Route: *************************************
+
+http://localhost:3000/
+http://localhost:3000/about abc.html
+http://localhost:3000/about/user  --------> Nested Route
+http://localhost:30(X)/user/10  --------> Route Parameters
+http://localhost:3000/user/yahubaba/rollno/12
+http://localhost:3000/search?name=yahubaba ------>Query Parameters
+
+
+When handling different operations
+Example:
+
+app.get('/tasks')       // Read tasks
+app.post('/tasks')      // Create task
+app.put('/tasks/:id')   // Update task
+app.delete('/tasks/:id') // Delete task
+
+# Pass Value through Route Parameters
+http://localhost:3000/user/10
+
+app.get('/user/:userid', (req, res) => {
+    res.send(req.params) -------> { userid: '10' }
+})
+
+# Pass Value through Query Parameters
+http://localhost:3000/search?name=yahubaba
+
+app.get('/search', (req, res) => {
+  res.send(req.query) -------> { name: 'yahubaba' }
+})
+
+http://localhost:3000/search?name=Azaz&age=20
+
+******************************** end Route **********************************
+-----------------------------------------------------------------------------------
+*******************************ExpressJs Response Methods********************
+✔ Summary (Very Short)
+Method -------> Use
+res.send()  Send text/HTML/data
+res.json()	Send JSON
+res.status()	Set status code
+res.sendStatus()	Send status message
+res.redirect()	Redirect user
+res.download()	Send file for download
+res.sendFile()	Send a file
+res.end()	End response
+res.render()	Template rendering
+
+
+Redirect Code    Description
+Code
+301--------> A permanent redirect sed when a resource has been moved to a new URL.
+302-------->A temporary redirect used when a resource has been temporarily moved to a new URL.
+303--------> A temporary redirect used after a POST or PUT operation.
+307--------> A temporary redirect similar to 302, but better for sites with non-GET operations.
+308--------> The permanent counterpart to the 307 redirect.
+
+
+
+
+
