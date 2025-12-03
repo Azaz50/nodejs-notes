@@ -1,0 +1,225 @@
+################### ExpressJS with MongoDb ######################
+
+npm install mongoose
+const mongoose = require('mongoose');
+mongoose.connect('mongodb://127.0.0.1:27017/database-name')
+
+const test mongoose.model( 'User', mongoose.Schema({
+    name: {
+        type: String
+    },
+    age: {
+        type: Number
+    }
+}));
+
+
+Mongoose Commands for CRUD OPERATIONS
+MongoDB
+<---------------------- Create ------------------->
+insertOne()
+insertMany()
+create()
+<---------------------- Read ---------------------->
+find()
+findOne()
+findById()
+<---------------------- Update ---------------------->
+updateOne()
+updateMany()
+findByldAndUpdate()
+<---------------------- Delete ---------------------->
+deleteOne()
+deleteMany()
+findByIdAndDelete()
+
+------------------------------------------------------------------------------------------------
+This is a simple Contact Management System built with Node.js, Express, and MongoDB. It uses EJS for templating and Bootstrap for styling.
+
+The application allows users to:
+- View a list of all contacts.
+- View the details of a single contact.
+- Add a new contact.
+- Update an existing contact.
+- Delete a contact.
+
+The project structure is as follows:
+- `index.js`: The main application file, containing the server setup and routes.
+- `models/contacts.models.js`: Defines the Mongoose schema for the Contact model.
+- `views/`: Contains the EJS templates for the application's UI.
+  - `home.ejs`: Displays a list of all contacts.
+  - `add-contact.ejs`: A form for adding a new contact.
+  - `show-contact.ejs`: Displays the details of a single contact.
+  - `update-contact.ejs`: A form for updating an existing contact.
+  - `partials/`: Contains reusable EJS partials like the header and footer.
+- `public/`: Contains static assets like CSS files.
+
+################### ExpressJS with MongoDb ######################
+
+npm install mongoose
+const mongoose = require('mongoose');
+mongoose.connect('mongodb://127.0.0.1:27017/database-name')
+
+const test mongoose.model( 'User', mongoose.Schema({
+    name: {
+        type: String
+    },
+    age: {
+        type: Number
+    }
+}));
+
+
+Mongoose Commands for CRUD OPERATIONS
+MongoDB
+<---------------------- Create ------------------->
+insertOne()
+insertMany()
+create()
+<---------------------- Read ---------------------->
+find()
+findOne()
+findById()
+<---------------------- Update ---------------------->
+updateOne()
+updateMany()
+findByldAndUpdate()
+<---------------------- Delete ---------------------->
+deleteOne()
+deleteMany()
+findByIdAndDelete()
+
+-------------------------------------------------------------------------------------------------
+ This is a simple Contact Management System built with Node.js, Express, and MongoDB. It uses EJS for templating and Bootstrap for styling.
+ 
+ The application allows users to:
+   - `update-contact.ejs`: A form for updating an existing contact.
+   - `partials/`: Contains reusable EJS partials like the header and footer.
+ - `public/`: Contains static assets like CSS files.
+
+Changes made:
+- Implemented the "add contact" functionality.
+- Implemented the "update contact" functionality.
+- Implemented the "delete contact" functionality.
+- Added a confirmation dialog to the delete button on the `show-contact` and `home` pages.
+- Updated the `notes.txt` file to reflect the current status of the project.
+################### ExpressJS with MongoDb ######################
+
+npm install mongoose
+const mongoose = require('mongoose');
+mongoose.connect('mongodb://127.0.0.1:27017/database-name')
+
+const test mongoose.model( 'User', mongoose.Schema({
+    name: {
+        type: String
+    },
+    age: {
+        type: Number
+    }
+}));
+
+
+Mongoose Commands for CRUD OPERATIONS
+MongoDB
+<---------------------- Create ------------------->
+insertOne()
+insertMany()
+create()
+<---------------------- Read ---------------------->
+find()
+findOne()
+findById()
+<---------------------- Update ---------------------->
+updateOne()
+updateMany()
+findByldAndUpdate()
+<---------------------- Delete ---------------------->
+deleteOne()
+deleteMany()
+findByIdAndDelete()
+
+-------------------------------------------------------------------------------------------------
+ This is a simple Contact Management System built with Node.js, Express, and MongoDB. It uses EJS for templating and Bootstrap for styling.
+ 
+ The application allows users to:
+   - `update-contact.ejs`: A form for updating an existing contact.
+   - `partials/`: Contains reusable EJS partials like the header and footer.
+ - `public/`: Contains static assets like CSS files.
+
+Changes made:
+- Implemented the "add contact" functionality.
+- Implemented the "update contact" functionality.
+- Implemented the "delete contact" functionality.
+- Added a confirmation dialog to the delete button on the `show-contact` and `home` pages.
+- Updated the `notes.txt` file to reflect the current status of the project.
+-------------------------------------------------------------------------------------------------
+-------------------------------MVC PATTERN---------------------------
+
+What is MVC?
+MVC stands for Model-View-Controller. It is a software design pattern that separates the application logic into three interconnected elements.
+1. Model: Manages the data and business logic (e.g., Database schemas, data validation).
+2. View: Handles the display and user interface (e.g., HTML, EJS templates).
+3. Controller: Acts as an interface between Model and View. It processes requests, interacts with the Model, and renders the View.
+
+Implementation in this Project:
+
+Step 1: Directory Structure
+We organized the project into specific folders to follow MVC:
+- /config: For configuration files (Database connection).
+- /models: For Mongoose schemas (Model).
+- /views: For EJS templates (View).
+- /controller: For request handling logic (Controller).
+- /routes: For defining API endpoints (Routes).
+
+Step 2: Configuration (config/db.js)
+We separated the database connection logic to keep index.js clean.
+Code:
+import mongoose from 'mongoose';
+const connectDB = async () => {
+    // ... connection logic ...
+    await mongoose.connect(db_url);
+}
+export default connectDB;
+
+Step 3: Model (models/contacts.models.js)
+Defined the data structure for Contacts using Mongoose.
+Code:
+import mongoose from "mongoose";
+const contactSchema = mongoose.Schema({
+    first_name: { type: String },
+    // ... other fields
+})
+const Contact = mongoose.model("Contact", contactSchema)
+export default Contact;
+
+Step 4: Controller (controller/contacts.controller.js)
+Moved business logic from routes to controllers. Each function handles a specific task.
+Code:
+import Contact from '../models/contacts.models.js';
+
+export const getContacts = async (req, res) => {
+    const contacts = await Contact.find()
+    res.render('home', { contacts })
+}
+// ... other controller functions
+
+Step 5: Routes (routes/contacts.routes.js)
+Updated routes to use the controller functions instead of inline logic.
+Code:
+import express from "express"
+import { getContacts, ... } from "../controller/contacts.controller.js";
+const router = express.Router()
+
+router.get('/', getContacts)
+// ... other routes
+export default router;
+
+Step 6: Main Entry (index.js)
+Cleaned up index.js to only handle middleware, DB connection, and route mounting.
+Code:
+import connectDB from './config/db.js';
+import contactRoutes from './routes/contacts.routes.js';
+
+connectDB();
+app.use('/', contactRoutes);
+
