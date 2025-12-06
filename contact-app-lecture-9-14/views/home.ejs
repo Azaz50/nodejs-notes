@@ -27,10 +27,11 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <% contacts.forEach((contact, index)=> { %>
+                                    <% var srno = counter %>
+                                    <% contacts.forEach(contact => { %>
                                         <tr>
                                             <td>
-                                                <%= index + 1 %>
+                                                <%= srno++ %>
                                             </td>
                                             <td>
                                                 <%= contact.first_name %>
@@ -59,6 +60,23 @@
                                         <% }) %>
                                 </tbody>
                             </table>
+                            <nav>
+                                <ul class="pagination justify-content-center">
+                                    <% if(hasPrevPage) { %>
+                                    <li class="page-item"><a href="/?page=<%= prevPage %>" class="page-link">Previous</a></li>
+                                    <% } else { %>
+                                    <li class="page-item disabled"><a href="#" class="page-link">Previous</a></li>
+                                    <% } %>
+                                    <% for(let i = 1; i <= totalPages; i++) { %>
+                                    <li class="page-item <%= currentPage == i ? 'active' : '' %>"><a class="page-link" href="/?page=<%= i %>"><%= i %></a></li>
+                                    <% } %>
+                                    <% if(hasNextPage) { %>
+                                    <li class="page-item"><a href="/?page=<%= nextPage %>" class="page-link">Next</a></li>
+                                    <% } else { %>
+                                    <li class="page-item disabled"><a href="#" class="page-link">Next</a></li>
+                                    <% } %>
+                                </ul>
+                            </nav>
                         </div>
                     </div>
                 </div>

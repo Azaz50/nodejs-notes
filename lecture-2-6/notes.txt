@@ -129,6 +129,46 @@ Code
 308--------> The permanent counterpart to the 307 redirect.
 
 
+Server Status Codes
+200 - 0K
+201 - Created
+403 - Forbidden
+404 - Not Found
+500 - Internal Server Error
+503 - Service Unavailable
+504 - Gateway Timeout
 
 
+ExpressJS Response Methods
+• res.send()
+• res.json()
+• res.jsonp()
+• res.redirect()
+• res.render()
+• res.download()
+• res.sendFile()
+• res.end()
+• res.sendStatus()
+• res.headersSent()
+• res.set()
+• res.get()
 
+
+###################################### ExpressJS Request Properties & Methods ######################################
+
+ropertles
+req.params
+req.query
+req.body
+req.cookies
+
+JSON, form data
+req.hostname
+req.ip
+req.ips
+req.method
+req.originalUrl
+req.path
+req.protocol
+req.secure
+req.route

@@ -1,0 +1,329 @@
+###############################################################################
+----------------------------- ExpressJS middleware ---------------------
+###############################################################################
+
+✅ What is Middleware in Node.js (Express.js)?
+
+Middleware is a function that runs BETWEEN the request and the response.
+It can modify the request, validate, check authentication, log, or handle errors before the request reaches the final route handler.
+
+In short:
+
+Middleware = Request → Middleware → Route → Response
+
+✅ How Middleware Works? (Flow Diagram)
+
+When a request comes:
+
+Client → Server → Middleware 1 → Middleware 2 → Route Handler → Response
+
+
+Each middleware has access to:
+
+req → request object
+
+res → response object
+
+next() → moves to the next middleware
+
+If middleware does not call next(), the flow stops.
+
+✅ Basic Middleware Example
+✔ Example 1: Simple Logging Middleware
+const express = require("express");
+const app = express();
+
+// Middleware
+app.use((req, res, next) => {
+  console.log("Request URL:", req.url);
+  console.log("Method:", req.method);
+  next(); // move to next middleware or route
+});
+
+app.get("/", (req, res) => {
+  res.send("Home Page");
+});
+
+app.listen(5000, () => console.log("Server running"));
+
+
+📌 What happens here?
+Every request first goes to the middleware → logs data → goes to route → sends response.
+
+✅ Types of Middleware in Express.js
+
+Express has 5 main types of middleware:
+
+1️⃣ Application-Level Middleware (Global Middleware)
+
+Applied to the entire app using app.use().
+
+app.use((req, res, next) => {
+  console.log("Global middleware");
+  next();
+});
+
+2️⃣ Router-Level Middleware
+
+Used only on specific routes.
+
+const router = require("express").Router();
+
+router.use((req, res, next) => {
+  console.log("Router middleware");
+  next();
+});
+
+router.get("/users", (req, res) => {
+  res.send("Users Page");
+});
+
+app.use("/api", router);
+
+3️⃣ Built-in Middleware
+
+Express already provides some default middleware.
+
+Example: Body Parser
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+4️⃣ Third-Party Middleware
+
+Install from npm.
+
+Examples:
+
+📌 CORS middleware
+const cors = require("cors");
+app.use(cors());
+
+📌 Helmet (security middleware)
+const helmet = require("helmet");
+app.use(helmet());
+
+5️⃣ Error Handling Middleware
+
+Runs only when an error occurs. Must have 4 parameters.
+
+app.use((err, req, res, next) => {
+  console.error(err.message);
+  res.status(500).send("Something broke!");
+});
+
+
+To use it:
+
+app.get("/test", (req, res) => {
+  throw new Error("Test error");
+});
+
+✅ Practical Example: Authentication Middleware
+Middleware: Check if user is logged in
+function authMiddleware(req, res, next) {
+  const token = req.headers.authorization;
+
+  if (!token) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+
+  next(); // continue to route
+}
+
+Use on a route:
+app.get("/dashboard", authMiddleware, (req, res) => {
+  res.send("Dashboard");
+});
+
+
+🔹 If token missing → block request
+🔹 If token valid → allow access
+
+🎯 Summary
+Type	Description
+Application	Works for whole app
+Router	Works only for specific routes
+Built-in	Provided by Express (json, static)
+Third-party	Installed using npm (cors, helmet)
+Error-handler	Handles errors
+
+
+⭐ Best Example: Authentication Middleware (JWT)
+
+Very common middleware in real projects.
+
+const jwt = require("jsonwebtoken");
+
+function authMiddleware(req, res, next) {
+  const token = req.headers.authorization;
+
+  if (!token) {
+    return res.status(401).json({ message: "No token provided" });
+  }
+
+  try {
+    const decoded = jwt.verify(token, "SECRET_KEY");
+    req.user = decoded; // attach user data
+    next();
+  } catch (error) {
+    return res.status(403).json({ message: "Invalid token" });
+  }
+}
+
+app.get("/dashboard", authMiddleware, (req, res) => {
+  res.send("Welcome " + req.user.name);
+});
+
+🧠 Why Middleware Is Important?
+
+Middleware helps to:
+
+✔ Validate user authentication
+✔ Log requests
+✔ Parse incoming data
+✔ Handle errors
+✔ Apply rate-limiting
+✔ Check user roles (admin/user)
+✔ Protect routes
+✔ Serve static files
+======================================================= yahoo baba ============================================
+1. Application level middleware
+--------------------------------
+const express = require('express');
+const app = express();
+
+app.use((req, res, next) => {
+    const token = req.headers.authorization;
+    if (!token) {
+        return res.status(401).json({ message: 'Unauthorized' });
+    }
+
+})
+
+app.get('/', (req, res) => {
+    res.send('Home Page');
+});
+
+app.get('/about', (req, res) => {
+    res.send('About Page');
+});
+
+app.listen(5000, () => console.log('Server running'));
+------------------------------------------------------
+1. Application level middleware
+--------------------------------
+const express = require('express');
+const app = express();
+
+const mymiddleware = (req, res, next) =>  {
+    const token = req.headers.authorization;
+    if (!token) {
+        return res.status(401).json({ message: 'Unauthorized' });
+    }
+}
+app.use(mymiddleware);
+
+app.get('/', (req, res) => {
+    res.send('Home Page');
+});
+
+app.get('/about', (req, res) => {
+    res.send('About Page');
+});
+
+app.listen(5000, () => console.log('Server running'));
+------------------------------------------------------
+1. Application level middleware
+--------------------------------
+const express = require('express');
+const app = express();
+
+const mymiddleware = (req, res, next) =>  {
+    const token = req.headers.authorization;
+    if (!token) {
+        return res.status(401).json({ message: 'Unauthorized' });
+    }
+}
+app.get('/', mymiddleware, (req, res) => { // middleware used here
+    res.send('Home Page');
+});
+
+app.get('/about', (req, res) => { // middleware not used here
+    res.send('About Page');
+});
+
+app.listen(5000, () => console.log('Server running'));
+
+-------------------------------
+2. Router level middleware
+----------------------------
+const router = express.Router();
+
+router.use((req, res, next) => {
+    console.log('Request URL:', req.url);
+    console.log('Method:', req.method);
+    next();
+});
+
+router.get('/', (req, res) => {
+    res.send('Home Page');
+});
+
+router.get('/about', (req, res) => {
+    res.send('About Page');
+});
+
+app.use('/', router); // use for automatic run the middleware in all router
+
+
+------------------------------------------------------
+3. Error Handling Middleware
+--------------------------------
+const express = require('express');
+const app = express();
+
+app.get('/test', (req, res) => {
+    throw new Error('Test error');
+});
+
+app.get('/', (req, res) => {
+    res.send('Home Page');
+});
+
+
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).send('Something broke!');
+});
+
+
+app.listen(5000, () => console.log('Server running'));
+------------------------------------------------------
+app.use(req, res) => {
+    res.send("<h1>Error 404: Page Not Found</h1>");
+}
+------------------------------------------------------
+------------------------------------------------------
+4. Built-in Middleware
+--------------------------------
+ExpressJS : Built-in Middleware
+• express.json()
+• express.urlencoded()
+• express.static()
+app.use(express.json())
+
+5. Third-party Middleware
+--------------------------------
+Install from npm.
+
+✔ CORS middleware
+const cors = require("cors");
+app.use(cors());
+
+✔ Helmet middleware (Security)
+const helmet = require("helmet");
+app.use(helmet());
+
+✔ Morgan (Log incoming requests)
+const morgan = require("morgan");
+app.use(morgan("dev"));

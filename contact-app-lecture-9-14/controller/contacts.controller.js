@@ -1,9 +1,26 @@
 import Contact from '../models/contacts.models.js';
 
-
 export const getContacts = async (req, res) => {
-    const contacts = await Contact.find()
-    res.render('home', { contacts })
+    try {
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 3;
+
+        const result = await Contact.paginate({}, { page, limit });
+        res.render('home', { 
+            totalDocs: result.totalDocs,
+            limit: result.limit,
+            totalPages: result.totalPages,
+            currentPage: result.page,
+            counter: result.pagingCounter,
+            hasPrevPage: result.hasPrevPage,
+            hasNextPage: result.hasNextPage,
+            prevPage: result.prevPage,
+            nextPage: result.nextPage,
+            contacts: result.docs
+         })
+    } catch (error) {
+        res.render('500', { error: error.message })
+    }
 }
 
 export const getContact = async (req, res) => {

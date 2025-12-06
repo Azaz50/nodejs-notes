@@ -65,6 +65,22 @@ app.get('/error', (req, res) => {
 
 // ################################################### end of Express Js Response ######################################
 
+// ################################################## ExpressJS Request Properties & Methods ###########################
+//--------------------------------------------------->  lecture 6 --------------------------------------------------
+app.use(express.json()); // for data json send in server must use this
+app.use(express.urlencoded({ extended: false })); // to send form data must be use this
+
+
+app.post('/user', (req, res) => {
+    res.send(req.body);
+    res.sendStatus(200);
+})
+
+
+
+// ################################################## end of ExpressJS Request Properties & Methods #########################
+
+
 app.listen(3000, () => {
     console.log('Server is running on port 3000')
 })
