@@ -198,3 +198,146 @@ app.use((err, req, res, next) => {
 app.listen(3000, () => {
   console.log('Server is running on port 3000');
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// const express = require('express');
+// const app = express();
+// const session = require('express-session');
+// const bcrypt = require('bcryptjs');
+// const mongoose = require('mongoose');
+
+// const connectDB = require('./config/db.js');
+// require('dotenv').config();
+
+// const User = require('./model/user.model');
+
+// // Database Connection
+// connectDB();
+
+// // middleware
+// app.use(express.urlencoded({ extended: false }));
+// app.use(express.json());
+// app.set('view engine', 'ejs');
+
+// // (Optional) simple session setup if you want sessions later
+// app.use(session({
+//   secret: process.env.SESSION_SECRET || 'keyboard cat',
+//   resave: false,
+//   saveUninitialized: false,
+//   cookie: { secure: false } // set true if using HTTPS
+// }));
+
+// let checkLogin = (req, res, next) => {
+//     if (req.session.user) {
+//         return next();
+//     }
+//     res.redirect('/login');
+// }
+
+// app.get('/', checkLogin, (req, res) => {
+//     res.send(`<h1>Home Page</h1> 
+//         <p> Hello ${req.session.user?.username || 'Guest'}</p>
+//         <a href="/logout">Logout</a>
+//     `);
+// });
+
+// app.get('/profile', checkLogin, (req, res) => {
+//     res.send(`<h1>Profile Page</h1>
+//         <p> Hello ${req.session.user?.username || 'Guest'}</p>
+//         <a href="/logout">Logout</a>
+//     `);
+// })
+
+// app.get('/register', (req, res) => {
+//   res.render('register', { error: null });
+// });
+
+// app.post('/register', async (req, res, next) => {
+//   try {
+//     const { username, userpassword } = req.body;
+//     const hashedPassword = await bcrypt.hash(userpassword, 10);
+
+//     await User.create({
+//       username,
+//       userpassword: hashedPassword
+//     });
+
+//     return res.redirect('/login');
+//   } catch (err) {
+//     next(err);
+//   }
+// });
+
+// app.get('/login', (req, res) => {
+//     if (req.session.user) {
+//         return res.redirect('/');
+//     }else {
+//         res.render('login', { error: null });
+//     }
+// });
+
+// app.post('/login', async (req, res, next) => {
+//   try {
+//     const { username, userpassword } = req.body;
+//     const user = await User.findOne({ username });
+
+//     if (!user) {
+//       // IMPORTANT: return after sending a response so code stops here
+//       return res.status(401).render('login', { error: 'User not found' });
+//     }
+
+//     const isMatch = await bcrypt.compare(userpassword, user.userpassword);
+//     if (!isMatch) {
+//       // IMPORTANT: return here as well
+//       return res.status(401).render('login', { error: 'Incorrect password' });
+//     }
+
+//     // success: set session / cookie / whatever
+//     req.session.user = { id: user._id, username: user.username };
+
+//     return res.redirect('/');
+//   } catch (err) {
+//     next(err);
+//   }
+// });
+
+// app.get('/logout', (req, res) => {
+//     req.session.destroy((err) => {
+//         if (err) {
+//             return res.status(500).send('Error logging out');
+//         }
+//         res.redirect('/login');
+//     });
+// })
+
+// // Centralized error handler (prevents double-sends when headers already sent)
+// app.use((err, req, res, next) => {
+//   console.error(err);
+//   if (res.headersSent) {
+//     return next(err);
+//   }
+//   res.status(500).send('Internal Server Error');
+// });
+
+// app.listen(3000, () => {
+//   console.log('Server is running on port 3000');
+// });
