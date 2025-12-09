@@ -1,0 +1,241 @@
+# Project: Node.js File Upload
+
+This document explains the functionality of the Node.js file upload project.
+
+## 1. Project Overview
+
+This project is a simple web application built with Node.js and Express that demonstrates various file upload scenarios. It uses `multer` for handling `multipart/form-data`, which is primarily used for uploading files. The frontend is a simple HTML form rendered using EJS (Embedded JavaScript templates).
+
+### Technologies Used:
+- **Node.js:** JavaScript runtime environment.
+- **Express:** Web framework for Node.js.
+- **EJS:** Templating engine to generate HTML with plain JavaScript.
+- **Multer:** Middleware for handling `multipart/form-data`, used for file uploads.
+
+## 2. File Structure
+
+- `index.js`: The main server file containing all the application logic.
+- `package.json`: Lists project dependencies and scripts.
+- `views/myform.ejs`: The EJS template for the frontend upload form.
+- `uploads/`: Directory where uploaded files are stored.
+- `notes-image/`: Directory containing project-related images (not used by the application itself).
+- `notes.txt`: This documentation file.
+
+## 3. Step-by-Step Process
+
+### Step 1: Setting up the Express Server (`index.js`)
+
+The application starts by setting up an Express server.
+
+```javascript
+const express = require('express');
+const app = express();
+```
+
+Middleware is used to parse incoming request bodies.
+- `express.urlencoded({ extended: false })`: Parses URL-encoded bodies (form data).
+- `express.json()`: Parses JSON bodies.
+
+```javascript
+app.use(express.urlencoded({ extended: false }))
+app.use(express.json())
+```
+
+EJS is set as the view engine to render the frontend form.
+
+```javascript
+app.set('view engine', 'ejs');
+```
+
+The server listens on port 3000.
+
+```javascript
+app.listen(3000, () => {
+    console.log('Server running on port 3000');
+})
+```
+
+### Step 2: The Frontend Form (`views/myform.ejs`)
+
+The `myform.ejs` file contains a standard HTML form.
+
+- **`action="/submitform"`**: Specifies that the form data will be sent to the `/submitform` route on the server.
+- **`method="POST"`**: The HTTP method used to send the data.
+- **`enctype="multipart/form-data"`**: This is crucial for file uploads. It tells the browser to send the form data in multiple parts, allowing files to be included.
+
+The form has three input fields:
+1.  A text input for `name`.
+2.  A file input named `userfile` for a single file.
+3.  A file input named `userdocuments` that allows multiple files (`multiple="multiple"`).
+
+### Step 3: Configuring Multer for File Uploads (`index.js`)
+
+Multer is configured with a `storage` engine and a `fileFilter`.
+
+#### Storage Configuration:
+
+`multer.diskStorage` is used to save files to the disk.
+- **`destination`**: This function determines the folder where uploaded files will be stored. It's set to the `./uploads/` directory.
+- **`filename`**: This function determines the name of the file inside the `uploads` folder. To avoid naming conflicts, it generates a unique filename by combining the current timestamp (`Date.now()`) with the original file's extension.
+
+```javascript
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, './uploads')
+    },
+    filename: (req, file, cb) => {
+        const newFilename = Date.now() + path.extname(file.originalname)
+        cb(null, newFilename)
+    }
+})
+```
+
+#### File Filter Configuration:
+
+The `fileFilter` function is used to control which files should be accepted. The active configuration in `index.js` allows for specific file types based on the input field name.
+
+- If the file comes from the input field named `userfile`, it only accepts JPEG and PNG images.
+- If the file comes from the input field named `userdocuments`, it only accepts PDF files.
+- If a file does not meet these criteria, an error is thrown.
+
+```javascript
+const fileFilter = (req, file, cb) => {
+    if (file.fieldname === 'userfile'){ // Note: should be file.fieldname
+            if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
+        cb(null, true);
+    } else {
+        cb(new Error('Only images are allowed for userfile'), false);
+    }
+
+    }else if(file.fieldname === 'userdocuments') { // Note: should be file.fieldname
+        if (file.mimetype === 'application/pdf') {
+            cb(null, true);
+        } else {
+            cb(new Error('Only pdf are allowed for userdocuments'), false);
+        }
+    } else {
+        cb(new Error('File type not allowed'), false);
+    }
+}
+```
+*(Self-correction: The original code used `file.filename`, but it should be `file.fieldname` to check the form field name. The documentation reflects the corrected logic.)*
+
+#### Other `fileFilter` Examples (Commented Out):
+
+- **Allowing any image type:**
+  ```javascript
+  // const fileFilter = (req, file, cb) => {
+  //     if (file.mimetype.startsWith('image/')) {
+  //         cb(null, true);
+  //     } else {
+  //         cb(new Error('Only images are allowed'), false);
+  //     }
+  // }
+  ```
+- **Allowing only JPEG and PNG:**
+  ```javascript
+  // const fileFilter = (req, file, cb) => {
+  //     if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
+  //         cb(null, true);
+  //     } else {
+  //         cb(new Error('Only images are allowed'), false);
+  //     }
+  // }
+  ```
+
+#### Multer Initialization:
+
+The `upload` object is created with the storage, file size limits, and the file filter.
+- **`limits`**: Sets a file size limit of 3MB.
+
+```javascript
+const upload = multer({
+    storage: storage,
+    limits: {
+        fileSize: 1024 * 1024 * 3 // 3MB
+    },
+    fileFilter: fileFilter,
+})
+```
+
+### Step 4: Handling the Routes (`index.js`)
+
+#### GET Route (`/`):
+This route simply renders the `myform.ejs` form.
+
+```javascript
+app.get('/', (req, res) => {
+    res.render('myform')
+})
+```
+
+#### POST Route (`/submitform`):
+This is where the file upload is handled. The active configuration uses `upload.fields()` to handle uploads from multiple different input fields at the same time.
+
+- `upload.fields([...])`: This middleware processes the files.
+  - `{name: 'userfiles', maxCount: 1}`: Expects one file from the input named `userfiles`.
+  - `{name: 'userdocuments', maxCount: 3}`: Expects up to 3 files from the input named `userdocuments`.
+
+If the upload is successful, `req.files` will contain the file information, which is then sent back to the client as a JSON response.
+
+```javascript
+app.post('/submitform', upload.fields([
+    {name: 'userfiles', maxCount: 1},
+    {name: 'userdocuments', maxCount: 3}
+]), (req, res) => {
+    if (!req.files || Object.keys(req.files).length === 0) { // Check if req.files is empty
+        return res.status(400).send('No files uploaded')
+    }
+    res.send(req.files);
+})
+```
+
+#### Other Route Examples (Commented Out):
+
+- **Single File Upload:**
+  - Uses `upload.single('userfile')`.
+  - The uploaded file's information is available in `req.file`.
+  ```javascript
+  // app.post('/submitform', upload.single('userfile'), (req, res) => {
+  //     res.send(req.file.filename);
+  // })
+  ```
+
+- **Multiple Files Upload (from a single input):**
+  - Uses `upload.array('userfiles', 3)`. 'userfiles' is the field name, and 3 is the maximum number of files allowed.
+  - The files' information is available in `req.files` as an array.
+  ```javascript
+  // app.post('/submitform', upload.array('userfiles', 3), (req, res) => {
+  //     if (!req.files || req.files.length === 0) {
+  //         return res.status(400).send('No files uploaded')
+  //     }
+  //     res.send(req.files.map(file => file.filename));
+  // })
+  ```
+
+### Step 5: Error Handling (`index.js`)
+
+A custom error handling middleware is defined to catch and handle errors that occur during the upload process, specifically errors from Multer.
+
+- It checks if the error is an instance of `MulterError`.
+- **`LIMIT_FILE_SIZE`**: Catches errors when a file is too large.
+- **`LIMIT_UNEXPECTED_FILE`**: Catches errors when too many files are uploaded for a given field.
+- Other `MulterError`s are handled generically.
+- If the error is not from Multer, a generic "Something went wrong" message is sent.
+
+```javascript
+app.use((error, req, res, next) => {
+    if (error instanceof multer.MulterError) {
+        if (error.code === 'LIMIT_FILE_SIZE') {
+            return res.status(400).send(`File size exceeds the limit of 3MB`)
+        }
+        if (error.code === 'LIMIT_UNEXPECTED_FILE') {
+            return res.status(400).send(`Too many files uploaded. Maximum allowed is 3.`)
+        }
+        return res.status(400).send(`Multer Error: ${error.message} : ${error.code}`)
+    } else if (error) {
+        return res.status(400).send(`Something went wrong: ${error.message}`)
+    }
+    next()
+})
+```
