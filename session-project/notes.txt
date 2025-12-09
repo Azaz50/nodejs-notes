@@ -1,0 +1,62 @@
+This project is a simple Express.js application that demonstrates how to use sessions with MongoDB for storage. Here's a step-by-step guide to understanding the code in `index.js`:
+
+### 1. Setting up the Environment
+- `require('dotenv').config();`: This line loads environment variables from a `.env` file into `process.env`. This is used to keep sensitive information like database connection strings out of the code.
+
+### 2. Importing Necessary Libraries
+- `const express = require('express');`: This imports the Express.js framework, which is used to create the web server.
+- `const session = require('express-session');`: This imports the `express-session` middleware, which is used to manage user sessions.
+- `let MongoStore = require('connect-mongo');`: This imports `connect-mongo`, which is a session store for `express-session` that saves sessions to a MongoDB database.
+
+### 3. Initializing the Application
+- `const app = express();`: This creates an instance of an Express application.
+
+### 4. Configuring Session Middleware
+- `app.use(session({ ... }));`: This line sets up the session middleware with several options:
+    - `secret: 'mySecret'`: This is a secret key used to sign the session ID cookie. It should be a long, random string in a real application.
+    - `resave: false`: This prevents the session from being saved back to the session store if it wasn't modified during the request.
+    - `saveUninitialized: false`: This prevents a session from being stored if it's new and not modified.
+    - `store: MongoStore.create({ ... })`: This configures the session store to use MongoDB.
+        - `mongoUrl: process.env.MONGO_URL`: This is the connection string for your MongoDB database, which is loaded from the `.env` file.
+        - `collectionName: 'sessions'`: This is the name of the collection in your MongoDB database where session data will be stored.
+    - `cookie: { maxAge: 1000 * 60 * 60 * 24 }`: This sets the expiration time for the session cookie to one day (in milliseconds).
+
+### 5. Defining Routes
+The application has several routes to demonstrate session functionality:
+
+- **`GET /`**:
+    - This is the home page.
+    - It checks if a `username` is stored in the session (`req.session.username`).
+    - If a username exists, it displays a welcome message with the username.
+    - If not, it shows a message indicating that no username is found.
+
+- **`GET /set-username`**:
+    - This route sets a `username` in the session.
+    - It assigns the value `'Azaz'` to `req.session.username`.
+    - It then sends a confirmation message.
+
+- **`GET /get-username`**:
+    - This route retrieves and displays the `username` from the session, similar to the home page.
+
+- **`GET /destroy-session`**:
+    - This route destroys the current session.
+    - It calls `req.session.destroy()`, which removes the session from the database.
+    - It sends a success or error message depending on the outcome.
+
+### 6. Starting the Server
+- `app.listen(3000, () => { ... });`: This starts the Express server and makes it listen for incoming requests on port 3000.
+
+### How to Run This Project
+1.  **Install dependencies**: Run `npm install` in your terminal.
+2.  **Create a `.env` file**: In the root of the project, create a file named `.env` and add your MongoDB connection string to it, like this:
+    ```
+    MONGO_URL=mongodb://localhost:27017/your_database_name
+    ```
+3.  **Start the server**: Run `node index.js` in your terminal.
+4.  **Test the routes**:
+    - Open your browser and go to `http://localhost:3000`. You should see "No username found in session".
+    - Go to `http://localhost:3000/set-username`. You will see a success message.
+    - Go back to `http://localhost:3000`. You should now see "Username in session is Azaz".
+    - Go to `http://localhost:3000/get-username` to see the username again.
+    - Go to `http://localhost:3000/destroy-session` to clear the session.
+    - If you go back to `http://localhost:3000`, you will see "No username found in session" again.
