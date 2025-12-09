@@ -1,0 +1,78 @@
+# Project Learnings: Node.js Authentication
+
+This document outlines the key concepts and steps involved in creating a Node.js authentication system.
+
+## 1. Project Setup
+
+*   **Initialize a Node.js Project:**
+    *   `npm init -y`
+    *   This command creates a `package.json` file, which manages project dependencies and scripts.
+
+*   **Install Dependencies:**
+    *   `npm install express ejs mongoose bcryptjs express-session dotenv`
+    *   **express:** A web framework for Node.js that simplifies server-side logic.
+    *   **ejs:** A templating engine that allows embedding dynamic content in HTML.
+    *   **mongoose:** An ODM (Object Data Modeling) library for MongoDB, providing a structured way to interact with the database.
+    *   **bcryptjs:** A library for hashing passwords to securely store them.
+    *   **express-session:** Middleware for managing user sessions, enabling features like persistent logins.
+    *   **dotenv:** A module for loading environment variables from a `.env` file, keeping sensitive data out of the main codebase.
+
+## 2. Server and Database Configuration
+
+*   **Creating the Express Server (`index.js`):**
+    *   An Express application is initialized to handle routes and middleware.
+    *   The server is configured to listen on a specific port (e.g., 3000).
+
+*   **Database Connection (`config/db.js`):**
+    *   A separate file is created to manage the MongoDB connection.
+    *   Mongoose is used to connect to the database using a connection string, which is often stored in an environment variable for security.
+
+## 3. User Model and Schema
+
+*   **Defining the User Schema (`model/user.model.js`):**
+    *   A Mongoose schema defines the structure of the user data in the database.
+    *   The schema specifies the fields for each user (e.g., `username`, `userpassword`).
+    *   A Mongoose model is created from the schema, which allows the application to interact with the `users` collection in the database.
+
+## 4. Core Authentication Logic
+
+*   **User Registration (`/register`):**
+    *   **GET `/register`:** Displays the registration form (`register.ejs`).
+    *   **POST `/register`:**
+        1.  Retrieves the `username` and `userpassword` from the form submission.
+        2.  **Hashes the password** using `bcrypt.hash()` before saving it to the database. This is a critical security measure to protect user passwords.
+        3.  Creates a new user in the database using the `User` model.
+        4.  Redirects the user to the login page upon successful registration.
+
+*   **User Login (`/login`):**
+    *   **GET `/login`:** Displays the login form (`login.ejs`).
+    *   **POST `/login`:**
+        1.  Retrieves the `username` and `userpassword` from the form.
+        2.  Finds the user in the database by their `username`.
+        3.  **Compares the submitted password** with the hashed password in the database using `bcrypt.compare()`.
+        4.  If the credentials are valid, a **session is created** for the user using `express-session`. The user's information is stored in the session, which allows them to stay logged in across multiple requests.
+        5.  Redirects the user to a protected page (e.g., the home page).
+
+*   **User Logout (`/logout`):**
+    *   **GET `/logout`:**
+        1.  **Destroys the user's session**, effectively logging them out.
+        2.  Redirects the user to the login page.
+
+## 5. Middleware and Protected Routes
+
+*   **`checkLogin` Middleware:**
+    *   A custom middleware function is created to protect routes that should only be accessible to logged-in users.
+    *   It checks if a user object exists in the session (`req.session.user`).
+    *   If the user is logged in, it allows the request to proceed to the next route handler.
+    *   If the user is not logged in, it redirects them to the login page.
+
+*   **Applying Middleware to Routes:**
+    *   The `checkLogin` middleware is applied to routes like `/` and `/profile` to ensure that only authenticated users can access them.
+
+## 6. Error Handling
+
+*   **Centralized Error Handler:**
+    *   A dedicated middleware function is used to catch and handle errors that occur during the request-response cycle.
+    *   This prevents the server from crashing and provides a consistent way to respond to errors.
+
+By following these steps, you can build a secure and functional authentication system in a Node.js application. This project provides a solid foundation for understanding core concepts like password hashing, session management, and protected routes.
