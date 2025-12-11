@@ -23,8 +23,7 @@ const studentSchema = new mongoose.Schema({
         required: true,
     },
     profile_pic: {
-        type: String,
-        required: true,
+        type: String
     },
 
 });
