@@ -1,8 +1,12 @@
 const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
+const { MulterError } = require('multer');
+const auth = require('./middleware/auth.js'); // for jwt authentication
+const userRoutes = require('./routes/users.route.js'); // for jwt authentication
 const cors = require('cors')
 const path = require('path')
+
 
 const studentRoutes = require('./routes/students.route.js');
 
@@ -26,6 +30,10 @@ app.use(express.json());
 
 // API routes for students
 // All routes defined in studentRoutes will be prefixed with /api/students
+// API routes for users
+// All routes defined in userRoutes will be prefixed with /api/users
+app.use('/api/users', userRoutes)
+app.use(auth);
 app.use('/api/students', studentRoutes);
 
 // this middleware auto run on every api route of related to Multer error so image upload take multer help thats why image error give here (error handling)
