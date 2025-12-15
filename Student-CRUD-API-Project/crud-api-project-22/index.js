@@ -16,7 +16,9 @@ require('dotenv').config();
 // Database Connection
 connectDB();
 
-app.use(cors())
+app.use(cors({
+  origin: "*"
+}));
 
 app.use('/uploads', express.static(path.join(__dirname,'uploads'), {
     setHeaders: (res, path, stat) => {

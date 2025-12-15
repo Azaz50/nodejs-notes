@@ -7,7 +7,6 @@ const auth = async (req, res, next) => {
         if(typeof bearerHeader !== 'undefined'){
             const token = bearerHeader.split(' ')[1];
             const user = jwt.verify(token, process.env.JWT_SECRET);
-            console.log("user", user);
             req.token = user;
             next();
         }else{
